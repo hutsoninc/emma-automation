@@ -4,6 +4,7 @@ const http = require('http');
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+var jobSchedule = require('./app/jobSchedule');
 
 new Promise(function(resolve, reject){
         
@@ -55,6 +56,8 @@ new Promise(function(resolve, reject){
     server.listen(process.env.PORT, process.env.HOST, () => {
         console.log("Express server running on port " + process.env.PORT);
     });
+
+    jobSchedule.run();
 
 }), err => {
     

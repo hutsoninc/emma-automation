@@ -17,6 +17,7 @@
     "dotenv": "^5.0.1",
     "emma-sdk": "0.0.3",
     "express": "^4.16.2",
-    "mongoose": "^5.0.7"
+    "mongoose": "^5.0.7",
+    "node-schedule": "^1.3.0"
   }
 }
