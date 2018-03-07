@@ -7,17 +7,6 @@ var emma = new Emma({
     accountID: process.env.EMMA_ACCOUNT_ID
 });
 
-var memberID = '1159983455';
-var memberEmail = '';
-
-emma.member.withID(memberID).details((err,res) => {
-
-    console.log(res)
-
+emma.group.list((err, res) => {
+    console.log(res);
 });
-
-/*
-emma.member.withEmail(memberEmail).details((err, res) =>
-    console.log(res)
-);
-*/

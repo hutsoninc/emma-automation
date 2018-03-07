@@ -3,14 +3,15 @@ const mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var equipmentSchema = new Schema({
-    //_id: String,
+    _id: String,
+    branch: String,
     category: String,
-    customerAccount: Number,
+    customerAccount: String,
     dateAdded: Date,
     make: String,
     model: String,
     newOrUsed: String,
-    status: String, // 'sent', 'unsent', or 'skipped'
+    status: {type: String, enum: ['sent', 'unsent', 'skipped']},
     subcategory: String
 });
 

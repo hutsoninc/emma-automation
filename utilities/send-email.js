@@ -1,4 +1,5 @@
 require('dotenv').config({path: '../.env'});
+const fs = require('fs');
 const Emma = require('emma-sdk');
 
 var emma = new Emma({
@@ -7,17 +8,8 @@ var emma = new Emma({
     accountID: process.env.EMMA_ACCOUNT_ID
 });
 
-var memberID = '1159983455';
-var memberEmail = '';
-
-emma.member.withID(memberID).details((err,res) => {
-
-    console.log(res)
-
+emma.mailing.withID(34451807).resend({
+    recipient_emails: ['drogers@hutsoninc.com']
+}, function(res){
+    console.log(res);
 });
-
-/*
-emma.member.withEmail(memberEmail).details((err, res) =>
-    console.log(res)
-);
-*/

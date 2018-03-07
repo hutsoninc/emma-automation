@@ -3,12 +3,11 @@ const mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var customerSchema = new Schema({
-	//_id: String,
+	_id: String,
     accountName: String,
-    branch: String,
 	city: String,
     email: String,
-    emmaAccount: Number,
+    emmaAccount: String,
     equipment: Array,
 	firstName: String,
 	lastName: String,
