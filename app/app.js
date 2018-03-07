@@ -421,7 +421,7 @@ exports.sendEmails = function(){
 
         function sendEmails(){
 
-            emma.mailing.withID(34451807).resend({
+            emma.mailing.withID(34683231).resend({
                 recipient_emails: emailList
             }, (err, res) => {
 
