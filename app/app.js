@@ -1,5 +1,6 @@
 require('dotenv').config()
 const Emma = require('emma-sdk');
+var moment = require('moment-timezone');
 
 // Models
 var Equipment = require('./models/Equipment.js');
@@ -195,10 +196,11 @@ exports.handleImport = function(req, res){
 
             // Save new customer
             newCustomer.save(err => {
-
+                
                 if(err) console.log(err);
-
+                
                 // report that new customer was saved
+                console.log('Customer added to database: ' + rawData["account-number"]);
 
             });
 
@@ -211,7 +213,7 @@ exports.handleImport = function(req, res){
                 branch: rawData.branch,
                 category: rawData.category,
                 customerAccount: rawData["account-number"],
-                dateAdded: new Date(),
+                dateAdded: getCurrentDate(),
                 make: rawData.make,
                 model: rawData.model,
                 newOrUsed: rawData["new-used"],
@@ -225,7 +227,8 @@ exports.handleImport = function(req, res){
                 if(err) console.log(err);
     
                 // report that new equipment was saved
-    
+                console.log('Equipment added to database: ' + rawData["serial-number"]);
+
             });
 
         }
@@ -238,7 +241,7 @@ exports.handleImport = function(req, res){
 
 exports.sendEmails = function(){
 
-    var todayDate = new Date();
+    var todayDate = getCurrentDate();
 
     console.log(todayDate + ": Sending emails")
 
@@ -409,7 +412,7 @@ exports.sendEmails = function(){
         
                     }else {
                                 
-                        sendEmails();
+                        sendMessages();
         
                     }
         
@@ -419,7 +422,7 @@ exports.sendEmails = function(){
 
         }
 
-        function sendEmails(){
+        function sendMessages(){
 
             emma.mailing.withID(34683231).resend({
                 recipient_emails: emailList
@@ -433,6 +436,7 @@ exports.sendEmails = function(){
                     
                     // Update status of equipment
                     updateSentStatus();
+                    console.log('Email sent to: ' + emailList.join(', '));
 
                 }
 
@@ -477,7 +481,7 @@ exports.sendEmails = function(){
                     }else {
         
                         // Finished with sending emails
-                        console.log(new Date() + ': Finished emailing');
+                        console.log('Finished emailing');
         
                     }
         
@@ -496,3 +500,9 @@ exports.sendEmails = function(){
     });
 
 };
+
+function getCurrentDate(){
+
+    return new Date(moment.tz(new Date(), "America/Chicago"));
+
+}

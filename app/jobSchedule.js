@@ -4,10 +4,12 @@ var app = require('./app');
 exports.run = function(){
 
     // Set to run every day at 5:00 p.m.
+    var runTime = '0 0 17 * * 1-7';
+
     var emailJob = new cron.CronJob({
-        cronTime: '0 0 17 * * 1-7',
+        cronTime: runTime,
         onTick: function() {
-            app.sendEmails
+            app.sendEmails();
             console.log('Email job triggered');
         },
         start: false,
@@ -17,6 +19,5 @@ exports.run = function(){
     emailJob.start();
     
     console.log('Email job scheduled');
-    console.log(emailJob.running);
 
 }
