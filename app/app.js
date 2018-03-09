@@ -239,17 +239,30 @@ exports.handleImport = function(req, res){
     
 }
 
-exports.sendEmails = function(){
+exports.sendEmails = function(settings){
 
-    var todayDate = getCurrentDate();
+    var config = {
+        todaysDate: getCurrentDate()
+    };
 
-    console.log(todayDate + ": Sending emails")
+    if(settings != undefined){
 
-    var today = {
-        day: todayDate.getDate(),
-        month: todayDate.getMonth(),
-        year: todayDate.getFullYear()
+        config.gte = settings.gte;
+        config.lt = settings.lt;
+
+    }else{
+
+        config.today = {
+            day: config.todaysDate.getDate(),
+            month: config.todaysDate.getMonth(),
+            year: config.todaysDate.getFullYear()
+        }
+        config.gte = new Date(config.today.year, config.today.month, config.today.day);
+        config.lt = new Date(config.today.year, config.today.month, config.today.day + 1);
+
     }
+
+    console.log(config.todaysDate + ": Sending emails");
 
     var sendList = {};
     var emailList = [];
@@ -257,43 +270,47 @@ exports.sendEmails = function(){
     var currentAccount, currentEquipment;
 
     // Search for equipment in database by today's date
-    Equipment.find({"dateAdded": {"$gte": new Date(today.year, today.month, today.day), "$lt": new Date(today.year, today.month, today.day + 1)}, "status": "unsent"}).exec(function(err, result){
+    Equipment.find({"dateAdded": {"$gte": config.gte, "$lt": config.lt}, "status": "unsent"}).exec(function(err, result){
 
         if(err) console.log(err);
 
-        for(var i = 0; i <= result.length; i++){
+        if(result.length > 0){
 
-            if(i != result.length){ // Not to end of equipment
+            for(var i = 0; i <= result.length; i++){
 
-                if(sendList[result[i].customerAccount] == undefined){
-                    sendList[result[i].customerAccount] = {};
+                if(i != result.length){ // Not to end of equipment
+
+                    if(sendList[result[i].customerAccount] == undefined){
+                        sendList[result[i].customerAccount] = {};
+                    }
+                    
+                    currentAccount = sendList[result[i].customerAccount];
+
+                    currentEquipment = {
+                        _id: result[i]._id,
+                        model: result[i].model,
+                        category: result[i].category,
+                        subcategory: result[i].subcategory
+                    };
+
+                    if(currentAccount.hasOwnProperty('equipment')){ // Account is already stored in sendList
+                        
+                        currentAccount.equipment.push(currentEquipment);
+                        
+                    }else{ // Need to add account to sendList
+                        
+                        currentAccount.customerAccount = result[i].customerAccount;
+                        currentAccount.branch = result[i].branch;
+                        currentAccount.equipment = [currentEquipment];
+                        currentAccount.equipmentString = [];
+
+                    }
+
+                }else{ // Done looping through equipment
+
+                    fetchCustomerInfo();
+
                 }
-                
-                currentAccount = sendList[result[i].customerAccount];
-
-                currentEquipment = {
-                    _id: result[i]._id,
-                    model: result[i].model,
-                    category: result[i].category,
-                    subcategory: result[i].subcategory
-                };
-
-                if(currentAccount.hasOwnProperty('equipment')){ // Account is already stored in sendList
-                    
-                    currentAccount.equipment.push(currentEquipment);
-                    
-                }else{ // Need to add account to sendList
-                    
-                    currentAccount.customerAccount = result[i].customerAccount;
-                    currentAccount.branch = result[i].branch;
-                    currentAccount.equipment = [currentEquipment];
-                    currentAccount.equipmentString = [];
-
-                }
-
-            }else{ // Done looping through equipment
-
-                fetchCustomerInfo();
 
             }
 

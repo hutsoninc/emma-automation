@@ -1,5 +1,4 @@
 require('dotenv').config();
-const Emma = require('emma-sdk');
 const http = require('http');
 const express = require('express');
 const bodyParser = require('body-parser');
