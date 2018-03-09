@@ -267,6 +267,7 @@ exports.sendEmails = function(settings){
     var sendList = {};
     var emailList = [];
     var sentEquipmentList = [];
+    var skippedEquipmentList = [];
     var currentAccount, currentEquipment;
 
     // Search for equipment in database by today's date
@@ -394,26 +395,14 @@ exports.sendEmails = function(settings){
                         });
         
                     }else{
-        
-                        Equipment.findOne({"_id": currentAccount._id}).exec(function(err, equipment){
-        
-                            if(err) console.log(err);
-                                    
-                            equipment.set({status: "skipped"});
-        
-                            equipment.save(function(err){
-        
-                                if(err){
-                                    
-                                    console.log(err);
-                                    
-                                }
 
-                                increment();
-                                
-                            });
-        
-                        });
+                        for(var k = 0; k < currentAccount.equipment.length; k++){
+
+                            skippedEquipmentList.push(currentAccount.equipment[k]._id);
+
+                        }
+
+                        increment();
         
                     }
         
@@ -499,6 +488,55 @@ exports.sendEmails = function(settings){
         
                         // Finished with sending emails
                         console.log('Finished emailing');
+
+                        updateSkippedStatus();
+        
+                    }
+        
+                }
+
+            })();
+
+        }
+
+        function updateSkippedStatus(){
+
+            var j = 0;
+
+            (function updateStatus(){
+                
+                Equipment.findOne({"_id": skippedEquipmentList[j]}).exec(function(err, equipment){
+
+                    if(err) console.log(err);
+                            
+                    equipment.set({status: "skipped"});
+
+                    equipment.save(function(err){
+
+                        if(err){
+                            
+                            console.log(err);
+                            
+                        }
+
+                        increment();
+
+                    });
+
+                });
+
+                function increment(){
+
+                    j++;
+                    
+                    if(j < skippedEquipmentList.length){
+        
+                        updateStatus();
+        
+                    }else {
+        
+                        // Finished with sending emails
+                        console.log('Updated status of skipped equipment');
         
                     }
         
