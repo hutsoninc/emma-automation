@@ -32,7 +32,6 @@ exports.handleImport = function(req, res){
             // Update customer
             if(rawData.email && !result.email || (rawData.email || result.email && result.emmaAccount == "")){
 
-
                 // Check if has an Emma account
                 emma.member.withEmail(rawData.email || result.email).details((err, res) => {
 
@@ -304,6 +303,8 @@ exports.sendEmails = function(settings){
                         currentAccount.branch = result[i].branch;
                         currentAccount.equipment = [currentEquipment];
                         currentAccount.equipmentString = [];
+                        currentAccount.category = result[i].category;
+                        currentAccount.subcategory = result[i].subcategory;
 
                     }
 
@@ -368,8 +369,8 @@ exports.sendEmails = function(settings){
                             'store-location': currentAccount.branch,
                             'customer-city': currentAccount.city,
                             'full-name': currentAccount.name,
-                            'equipment-category': "",
-                            'equipment-sub-category': ""
+                            'equipment-category': currentAccount.category,
+                            'equipment-sub-category': currentAccount.subcategory
                         }}, (err, res) => {
         
                             if(err){
