@@ -65,7 +65,12 @@ exports.handleImport = function(req, res){
                             email: rawData.email || result.email, 
                             fields: {
                                 "full-name": rawData.account,
-                                "customer-city": rawData.city
+                                "customer-city": rawData.city,
+                                "first-name": rawData["first-name"] || "",
+                                "last-name": rawData["last-name"] || "",
+                                "postal-code": rawData.zip,
+                                "customer-state": rawData.state,
+                                "deliver-address": rawData.address
                             },
                             group_ids: [2863455]
                         }, (err, res) => {
@@ -146,7 +151,12 @@ exports.handleImport = function(req, res){
                             email: rawData.email, 
                             fields: {
                                 "full-name": rawData.account,
-                                "customer-city": rawData.city
+                                "customer-city": rawData.city,
+                                "first-name": rawData["first-name"] || "",
+                                "last-name": rawData["last-name"] || "",
+                                "postal-code": rawData.zip,
+                                "customer-state": rawData.state,
+                                "deliver-address": rawData.address
                             },
                             group_ids: [2863455]
                         }, (err, res) => {
@@ -370,7 +380,9 @@ exports.sendEmails = function(settings){
                             'customer-city': currentAccount.city,
                             'full-name': currentAccount.name,
                             'equipment-category': currentAccount.category,
-                            'equipment-sub-category': currentAccount.subcategory
+                            'equipment-sub-category': currentAccount.subcategory,
+                            'equipment-make': currentAccount.make,
+                            'new-used': currentAccount.newOrUsed
                         }}, (err, res) => {
         
                             if(err){
