@@ -443,23 +443,32 @@ exports.sendEmails = function(settings){
 
         function sendMessages(){
 
-            emma.mailing.withID(34683231).resend({
-                recipient_emails: emailList
-            }, (err, res) => {
+            if(emailList.length > 0) {
 
-                if(err){
+                emma.mailing.withID(34683231).resend({
+                    recipient_emails: emailList
+                }, (err, res) => {
+    
+                    if(err){
+                        
+                        console.log(err);
                     
-                    console.log(err);
-                
-                }else{
-                    
-                    // Update status of equipment
-                    updateSentStatus();
-                    console.log('Email sent to: ' + emailList.join(', '));
+                    }else{
+                        
+                        // Update status of equipment
+                        updateSentStatus();
+                        console.log('Email sent to: ' + emailList.join(', '));
+    
+                    }
+    
+                });
+            
+            }else {
 
-                }
+                updateSkippedStatus();
+                console.log('No emails sent.');
 
-            });
+            }
 
         }
 
