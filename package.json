@@ -16,7 +16,7 @@
     "body-parser": "^1.18.2",
     "cron": "^1.3.0",
     "dotenv": "^5.0.1",
-    "emma-sdk": "0.0.3",
+    "emma-sdk": "github:AustinLeeGordon/emma-sdk",
     "express": "^4.16.2",
     "moment-timezone": "^0.5.14",
     "mongoose": "^5.0.7"
